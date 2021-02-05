@@ -23,3 +23,13 @@ export class addAdressInput {
   @Length(1, 100)
   Address: string;
 }
+
+@InputType()
+export class LoginInput {
+  @Field()
+  @IsEmail()
+  Email: string;
+ 
+  @Field()
+  Password: string;
+}

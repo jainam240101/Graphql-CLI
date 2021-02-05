@@ -19,10 +19,10 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
+  @Column()
+  Password: string;
+
   @Field(() => [Address], { nullable: true })
   @Column({ type: "jsonb", nullable: true, default: [] })
   Addresses: Address[];
-
-  @Column(() => String)
-  Password: string;
 }

@@ -5,8 +5,10 @@ import { createServer } from "http";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import Express, { Application } from "express";
+import session from "client-sessions";
 import { createConnection, getConnectionOptions } from "typeorm";
 import { UserResolver } from "./Resolvers/Users/Users";
+import cors from "cors";
 
 const main = async () => {
   const port = process.env.PORT || 3000;
@@ -18,12 +20,34 @@ const main = async () => {
   const schema = await buildSchema({
     resolvers: [UserResolver],
   });
+
+  const app: Application = Express();
   const apolloserver = new ApolloServer({
     schema: schema,
     playground: true,
     context: (req: Request) => ({ req }),
   });
-  const app: Application = Express();
+
+  app.use(
+    cors({
+      credentials: true,
+      origin: "http://localhost:8000",
+    })
+  );
+
+  app.use(
+    session({
+      cookieName: "userSession",
+      secret: "cat",
+      duration: 28 * 24 * 60 * 60 * 1000, // 28 Days
+      cookie: {
+        httpOnly: true,
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 14 Days
+        // secure: true,
+      },
+    })
+  );
+
   apolloserver.applyMiddleware({ app });
   const httpServer = createServer(app);
   apolloserver.installSubscriptionHandlers(httpServer);

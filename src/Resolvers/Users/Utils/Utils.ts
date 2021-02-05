@@ -2,7 +2,7 @@
 
 import { ApolloError } from "apollo-server-express";
 import { User } from "../../../entity/Users";
-import { createUserInterface } from "./Interfaces";
+import { createUserInterface, loginCredentialsInterface } from "./Interfaces";
 import { v4 as uuid } from "uuid";
 import bcrypt from "bcryptjs";
 
@@ -19,6 +19,29 @@ export const createUserUtil = async ({
       email: Email,
       Password: hasedpassword,
     }).save();
+  } catch (error) {
+    throw new ApolloError(error);
+  }
+};
+
+export const UserLoginUtil = async ({
+  Email,
+  Password,
+}: loginCredentialsInterface) => {
+  try {
+    const user: User | undefined = await User.findOne({
+      where: {
+        email: Email,
+      },
+    });
+    if (user === undefined) {
+      throw new Error("Invalid User");
+    }
+    const comparePassword: any = await bcrypt.compare(Password, user.Password);
+    if (!comparePassword) {
+      throw new Error("Invalid User");
+    }
+    return user;
   } catch (error) {
     throw new ApolloError(error);
   }
