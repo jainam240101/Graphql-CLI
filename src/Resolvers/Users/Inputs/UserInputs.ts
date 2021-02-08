@@ -29,7 +29,21 @@ export class LoginInput {
   @Field()
   @IsEmail()
   Email: string;
- 
+
   @Field()
+  Password: string;
+}
+
+@InputType()
+export class updateUserInput {
+  @Field({ nullable: true })
+  Name: string;
+
+  @Field({ nullable: true })
+  @IsEmail()
+  Email: string;
+
+  @Field({ nullable: true })
+  @Length(8, 16)
   Password: string;
 }

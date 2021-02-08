@@ -5,6 +5,11 @@ export interface createUserInterface {
   Email: string;
   Password: string;
 }
+export interface updateUserInterface {
+  name: string;
+  email: string;
+  Password: string;
+}
 
 export interface loginCredentialsInterface {
   Email: string;
